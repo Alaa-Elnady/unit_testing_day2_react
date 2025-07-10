@@ -4,7 +4,7 @@ import { setupServer } from "msw/node";
 import Pets from "../Pets";
 import { rest } from "msw";
 import mockedCats from "../../../mocks/cats.json";
-import userEvent from "@testing-library/user-event"
+import userEvent from "@testing-library/user-event";
 import Card from "../../Card/Card";
 
 // mocking//facking
@@ -29,8 +29,39 @@ describe("Test Pets component", () => {
     render(<Pets />);
     let catCards = await screen.findAllByRole("article");
     // userEvent.selectOptions(screen.getByLabelText(/Gender/i),'male')
-    fireEvent.change(screen.getByLabelText(/Gender/i),{ target: { value: 'male' } });
-    expect(screen.getAllByRole('article').length).toBe(2)
-    expect(screen.getAllByRole('article')).toStrictEqual([catCards[1],catCards[3]])
+    fireEvent.change(screen.getByLabelText(/Gender/i), {
+      target: { value: "male" },
+    });
+    expect(screen.getAllByRole("article").length).toBe(2);
+    expect(screen.getAllByRole("article")).toStrictEqual([
+      catCards[1],
+      catCards[3],
+    ]);
+  });
+
+  // Lab --------------------------------------------------------
+  test("Test render after Favoured Filter", async () => {
+    render(<Pets />);
+    let catCards = await screen.findAllByRole("article");
+
+    fireEvent.change(screen.getByLabelText(/Favourite/i), {
+      target: { value: "favoured" },
+    });
+    expect(screen.getAllByRole("article").length).toBe(2);
+    expect(screen.getAllByRole("article")).toStrictEqual([
+      catCards[0],
+      catCards[1],
+    ]);
+
+    fireEvent.change(screen.getByLabelText(/Favourite/i), {
+      target: { value: "not favoured" },
+    });
+
+    expect(screen.getAllByRole("article").length).toBe(3);
+    expect(screen.getAllByRole("article")).toStrictEqual([
+      catCards[2],
+      catCards[3],
+      catCards[4],
+    ]);
   });
 });
